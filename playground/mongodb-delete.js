@@ -8,22 +8,22 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', function (error, db) {
     console.log('Connected to MongoDB server');
 
     //suppression de tous les todos qui correspondent au texte mentionné
-    /*  db.collection('Todos').deleteMany({
-          text: 'Eat lunch'
-      }).then(function (result) {
-          console.log(result);
-      }, function (err) {
+    db.collection('Todos').deleteMany({
+        text: 'Eat lunch'
+    }).then(function (result) {
+        console.log(result);
+    }, function (err) {
 
-      });
+    });
 
-      //supprime le 1er todo qui correspond au texte mentionné
-      db.collection('Todos').deleteOne({
-          text: 'Eat lunch'
-      }).then(function (result) {
-          console.log(result);
-      }, function (error) {
+    //supprime le 1er todo qui correspond au texte mentionné
+    db.collection('Todos').deleteOne({
+        text: 'Eat lunch'
+    }).then(function (result) {
+        console.log(result);
+    }, function (error) {
 
-      });*/
+    });
 
 
     //renvoie l'élément qui a été supprimé
