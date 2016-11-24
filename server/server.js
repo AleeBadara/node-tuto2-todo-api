@@ -25,6 +25,17 @@ app.post('/todos', function (req, res) {
     });
 });
 
+//récupération de todo(s)
+app.get('/todos', function (req, res) {
+    Todo.find().then(function (todos) {
+        res.send({
+            todos
+        });
+    }, function (error) {
+        res.status(400).send(error);
+    })
+});
+
 
 app.listen(3000, function () {
     console.log('Started on port 3000');
