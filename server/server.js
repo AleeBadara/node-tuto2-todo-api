@@ -9,6 +9,7 @@ var Todo = require('./models/todo');
 var User = require('./models/user');
 
 var app = express();
+var port = process.env.PORT || 3000;
 
 //middleware
 app.use(bodyParser.json());
@@ -40,7 +41,6 @@ app.get('/todos', function (req, res) {
 //GET /todos/12345
 app.get('/todos/:id', function (req, res) {
     var id = req.params.id;
-    console.log('paramétre', id);
     if (!ObjectID.isValid(id)) {
         return res.status(404).send();
     }
@@ -55,7 +55,25 @@ app.get('/todos/:id', function (req, res) {
     })
 });
 
+//DELETE /todos/1234
+app.delete('/todos/:id', function (req, res) {
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    Todo.findByIdAndRemove(id).then((function (todo) {
+        if (todo) {
+            return res.send(todo);
+        } else {
+            return res.status(404).send();
+        }
+    }, function (error) {
+        res.status(400).send(error);
+    }))
 
-app.listen(3000, function () {
-    console.log('Started on port 3000');
+});
+
+
+app.listen(port, function () {
+    console.log('Started on port', port);
 });
