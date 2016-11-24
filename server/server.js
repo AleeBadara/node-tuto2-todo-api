@@ -1,7 +1,8 @@
 //Librairies exports
-var express = require('express');
-var bodyParser = require('body-parser'); //permet de transformer un json en objet javascript
-var ObjectID = require('mongodb').ObjectID;
+const express = require('express');
+const bodyParser = require('body-parser'); //permet de transformer un json en objet javascript
+const ObjectID = require('mongodb').ObjectID;
+const _ = require('lodash');
 
 //Local exports
 var mongoose = require('./db/mongoose');
@@ -70,6 +71,37 @@ app.delete('/todos/:id', function (req, res) {
     }, function (error) {
         res.status(400).send(error);
     }))
+});
+
+//PATCh /todos/:id mise à jour d'un todo
+app.patch('/todos/:id', function (req, res) {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    if (_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {
+        $set: body
+    }, {
+        new: true
+    }).then(function (todo) {
+        if (!todo) {
+            return res.status(404).send();
+        }
+        return res.send({
+            todo
+        });
+    }, function (error) {
+        res.status(400).send();
+    })
 
 });
 
