@@ -34,7 +34,7 @@ var UserSchema = new mongoose.Schema({
 });
 
 //Permet de filtrer l'objet renvoyé par mongoose en ne choisissant que les variables qui nous intéressent
-UserSchema.methods.toJson = function () {
+UserSchema.methods.toJSON = function () {
     var user = this;
     var userObject = user.toObject();
 
@@ -56,6 +56,26 @@ UserSchema.methods.generateAuthToken = function () {
 
     return user.save().then(function () {
         return token;
+    });
+};
+
+UserSchema.statics.findByToken = function (token) {
+    var User = this;
+    var decoded;
+
+    try {
+        decoded = jwt.verify(token, '123');
+    } catch (e) {
+        return new Promise(function (resolve, reject) {
+            reject();
+        });
+
+    }
+
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
     });
 };
 
